@@ -1,0 +1,167 @@
+/* src/app/globals.css */
+@import "tailwindcss";
+
+@theme {
+  /* Sentinel Custom Tokens */
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-border: var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-muted: var(--accent-muted);
+  --color-hover: var(--hover);
+
+  --color-risk-critical: var(--risk-critical);
+  --color-risk-high: var(--risk-high);
+  --color-risk-medium: var(--risk-medium);
+  --color-risk-low: var(--risk-low);
+  --color-risk-safe: var(--risk-safe);
+
+  --radius-sm: 4px;
+  --radius-default: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --animate-in: sentinel-fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes sentinel-fade-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.98) translateY(8px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes fade-up {
+    0% {
+      opacity: 0;
+      transform: scale(0.96) translateY(24px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+}
+
+:root {
+  /* Light Mode */
+  --bg: #ffffff;
+  --panel: #f7f7f8;
+  --border: #e5e7eb;
+  --text-primary: #111111;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+
+  --accent: #5e6ad2;
+  --accent-hover: #4b55c9;
+  --accent-muted: rgba(94, 106, 210, 0.08);
+
+  --hover: rgba(0, 0, 0, 0.03);
+
+  --risk-critical: #dc2626;
+  --risk-high: #d97706;
+  --risk-medium: #d97706;
+  --risk-low: #2563eb;
+  --risk-safe: #16a34a;
+}
+
+.dark {
+  /* Dark Mode — Deeper blacks, Linear-style */
+  --bg: #09090b;
+  --panel: #111113;
+  --border: #1e1e22;
+  --text-primary: #ededef;
+  --text-secondary: #8b8b8e;
+  --text-muted: #555558;
+
+  --accent: #6c72cb;
+  --accent-hover: #8187d8;
+  --accent-muted: rgba(108, 114, 203, 0.12);
+
+  --hover: rgba(255, 255, 255, 0.03);
+
+  --risk-critical: #ef4444;
+  --risk-high: #f59e0b;
+  --risk-medium: #f59e0b;
+  --risk-low: #3b82f6;
+  --risk-safe: #22c55e;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+
+  * {
+    border-color: var(--border);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.03em;
+    font-weight: 600;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: white;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .text-gradient {
+    background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}

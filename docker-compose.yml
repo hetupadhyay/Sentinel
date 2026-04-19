@@ -1,0 +1,106 @@
+# docker-compose.yml
+# Sentinel — Multi-Signal Fraud Detection Engine
+# Orchestrates: FastAPI backend, PostgreSQL, Redis, React frontend (Nginx)
+
+version: "3.9"
+
+services:
+
+  # ─────────────────────────────────────────
+  # PostgreSQL — Primary relational database
+  # ─────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: sentinel_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   # Persist DB data across container restarts
+    ports:
+      - "5432:5432"                              # Expose for local DB tools (e.g. pgAdmin)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────────────────
+  # Redis — Caching layer (rate limits, scan result cache)
+  # ─────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: sentinel_redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data                         # Persist Redis data across restarts
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────────────────
+  # FastAPI Backend — Core detection engine
+  # ─────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sentinel_backend
+    restart: unless-stopped
+    env_file:
+      - .env                                     # Load all env vars from root .env file
+    environment:
+      # Database
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      # Redis
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      # JWT
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+      REFRESH_TOKEN_EXPIRE_DAYS: ${REFRESH_TOKEN_EXPIRE_DAYS}
+      # App
+      APP_ENV: ${APP_ENV}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy          # Wait for Postgres to be ready
+      redis:
+        condition: service_healthy          # Wait for Redis to be ready
+    volumes:
+      - ./backend:/app                          # Hot-reload in development
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --reload-exclude 'data/*'"
+
+  # ─────────────────────────────────────────
+  # Next.js Frontend — Production build (Node)
+  # ─────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend-next
+      dockerfile: Dockerfile
+    container_name: sentinel_frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+# ─────────────────────────────────────────
+# Named volumes for data persistence
+# ─────────────────────────────────────────
+volumes:
+  postgres_data:
+  redis_data:
