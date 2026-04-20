@@ -1,4 +1,5 @@
 // frontend/src/pages/Register.jsx
+// Sentinel — Enhanced registration with full name, confirm password, 2-col layout
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShieldAlert, Eye, EyeOff, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
@@ -27,7 +28,7 @@ function PasswordStrength({ password }) {
   );
 }
 
-function validate({ email, username, password }) {
+function validate({ email, username, password, confirmPassword }) {
   const e = {};
   if (!email)                            e.email    = 'Email is required.';
   else if (!/\S+@\S+\.\S+/.test(email)) e.email    = 'Enter a valid email.';
@@ -36,6 +37,8 @@ function validate({ email, username, password }) {
     e.username = '3–64 chars, letters / numbers / underscores only.';
   if (!password)                         e.password = 'Password is required.';
   else if (password.length < 8)         e.password = 'Minimum 8 characters.';
+  if (!confirmPassword)                  e.confirmPassword = 'Please confirm your password.';
+  else if (password !== confirmPassword) e.confirmPassword = 'Passwords do not match.';
   return e;
 }
 
@@ -43,7 +46,7 @@ export default function Register() {
   const { register, isLoading } = useAuthStore();
   const navigate = useNavigate();
 
-  const [form,     setForm]     = useState({ email: '', username: '', password: '' });
+  const [form,     setForm]     = useState({ fullName: '', email: '', username: '', password: '', confirmPassword: '' });
   const [errors,   setErrors]   = useState({});
   const [showPass, setShowPass] = useState(false);
   const [apiError, setApiError] = useState('');
@@ -59,7 +62,7 @@ export default function Register() {
     const errs = validate(form);
     if (Object.keys(errs).length) { setErrors(errs); return; }
     try {
-      await register(form.email, form.username, form.password);
+      await register(form.email, form.username, form.password, form.fullName);
       toast.success('Account created — please sign in.');
       navigate('/login');
     } catch (err) {
@@ -74,7 +77,7 @@ export default function Register() {
                                      linear-gradient(90deg,var(--border) 1px,transparent 1px)`,
                     backgroundSize:'40px 40px' }}/>
                     
-      <div className="w-full max-w-sm relative z-10 animate-in">
+      <div className="w-full max-w-md relative z-10 animate-in">
         <div className="flex items-center gap-2.5 mb-8 justify-center">
           <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent-muted border border-accent/20">
             <ShieldAlert size={20} className="text-accent"/>
@@ -90,7 +93,7 @@ export default function Register() {
             <h2 className="text-base font-bold text-text-primary">
               Create account
             </h2>
-            <p className="text-xs text-text-secondary mt-0.5">Set up your Sentinel access.</p>
+            <p className="text-xs text-text-secondary mt-0.5">Fill in your details to get started.</p>
           </div>
 
           {apiError && (
@@ -101,18 +104,28 @@ export default function Register() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            {/* Full Name + Username — side by side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-text-secondary mb-1.5">Full Name</label>
+                <Input type="text" placeholder="John Doe" value={form.fullName}
+                       onChange={set('fullName')} autoComplete="name" disabled={isLoading}/>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-text-secondary mb-1.5">Username</label>
+                <Input type="text" placeholder="your_username" value={form.username}
+                       error={errors.username} onChange={set('username')} autoComplete="username" disabled={isLoading}/>
+              </div>
+            </div>
+
+            {/* Email — full width */}
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1.5">Email address</label>
               <Input type="email" placeholder="you@example.com" value={form.email}
                      error={errors.email} onChange={set('email')} autoComplete="email" disabled={isLoading}/>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1.5">Username</label>
-              <Input type="text" placeholder="your_username" value={form.username}
-                     error={errors.username} onChange={set('username')} autoComplete="username" disabled={isLoading}/>
-            </div>
-
+            {/* Password */}
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1.5">Password</label>
               <div className="relative">
@@ -126,6 +139,14 @@ export default function Register() {
                 </button>
               </div>
               <PasswordStrength password={form.password}/>
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label className="block text-xs font-medium text-text-secondary mb-1.5">Confirm Password</label>
+              <Input type="password"
+                     placeholder="Repeat password" value={form.confirmPassword}
+                     error={errors.confirmPassword} onChange={set('confirmPassword')} autoComplete="new-password" disabled={isLoading}/>
             </div>
 
             <Button type="submit" variant="primary" disabled={isLoading} className="w-full justify-center">

@@ -1,7 +1,10 @@
 # backend/app/main.py
 import time
+import uuid
 import logging
+import sys
 from contextlib import asynccontextmanager
+from pythonjsonlogger import jsonlogger
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,15 +15,15 @@ from slowapi.errors import RateLimitExceeded
 
 from app.config import settings
 from app.limiter import limiter
-from app.api.v1 import analyze, history, dashboard
+from app.api.v1 import analyze, history, dashboard, profile
 from app.auth.router import router as auth_router
 from app.db.session import engine
 from app.db.base import Base
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
-)
+logHandler = logging.StreamHandler(sys.stdout)
+formatter = jsonlogger.JsonFormatter('%(asctime)s %(levelname)s %(name)s %(message)s')
+logHandler.setFormatter(formatter)
+logging.basicConfig(level=logging.INFO, handlers=[logHandler])
 logger = logging.getLogger("sentinel")
 
 
@@ -76,22 +79,54 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
+    request_id = str(uuid.uuid4())[:8]
     start = time.perf_counter()
+    request.state.request_id = request_id
     response = await call_next(request)
-    response.headers["X-Process-Time"] = f"{time.perf_counter() - start:.4f}s"
+    elapsed = time.perf_counter() - start
+    response.headers["X-Process-Time"] = f"{elapsed:.4f}s"
+    response.headers["X-Request-ID"] = request_id
+    if elapsed > 2.0:
+        logger.warning(f"Slow request [{request_id}] {request.method} {request.url.path} took {elapsed:.2f}s")
     return response
 
 
+from fastapi.exceptions import RequestValidationError
+from sqlalchemy.exc import SQLAlchemyError
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    req_id = getattr(request.state, "request_id", "unknown")
+    logger.error("Validation error", extra={"request_id": req_id, "errors": exc.errors()})
+    return JSONResponse(
+        status_code=422,
+        content={"error": {"code": "VALIDATION_ERROR", "message": "Invalid request payload.", "details": exc.errors(), "request_id": req_id}}
+    )
+
+@app.exception_handler(SQLAlchemyError)
+async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
+    req_id = getattr(request.state, "request_id", "unknown")
+    logger.error("Database error", extra={"request_id": req_id, "error": str(exc)})
+    return JSONResponse(
+        status_code=500,
+        content={"error": {"code": "DATABASE_ERROR", "message": "Internal database error.", "request_id": req_id}}
+    )
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    logger.error(f"Unhandled exception on {request.url}: {exc}", exc_info=True)
-    return JSONResponse(status_code=500, content={"detail": "Internal server error."})
+    req_id = getattr(request.state, "request_id", "unknown")
+    logger.error("Unhandled exception", extra={"request_id": req_id, "error": str(exc)}, exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"error": {"code": "INTERNAL_SERVER_ERROR", "message": "An unexpected error occurred.", "request_id": req_id}}
+    )
 
 
 app.include_router(auth_router,       prefix="/auth",    tags=["Auth"])
 app.include_router(analyze.router,    prefix="/api/v1",  tags=["Analyze"])
 app.include_router(history.router,    prefix="/api/v1",  tags=["History"])
 app.include_router(dashboard.router,  prefix="/api/v1",  tags=["Dashboard"])
+app.include_router(profile.router,    prefix="/api/v1",  tags=["Profile"])
 
 
 @app.get("/health", tags=["Health"])

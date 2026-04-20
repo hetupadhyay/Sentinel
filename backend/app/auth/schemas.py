@@ -1,5 +1,7 @@
 # backend/app/auth/schemas.py
 
+from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel, EmailStr, field_validator
 import re
 
@@ -8,6 +10,7 @@ class UserRegister(BaseModel):
     email: EmailStr
     username: str
     password: str
+    full_name: Optional[str] = None
 
     @field_validator("username")
     @classmethod
@@ -22,6 +25,15 @@ class UserRegister(BaseModel):
         if len(v) < 8:
             raise ValueError("Password must be at least 8 characters.")
         return v
+
+    @field_validator("full_name")
+    @classmethod
+    def clean_full_name(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if len(v) > 128:
+                v = v[:128]
+        return v or None
 
 
 class UserLogin(BaseModel):
@@ -43,7 +55,12 @@ class UserOut(BaseModel):
     id: int
     email: str
     username: str
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+    country: Optional[str] = None
+    gender: Optional[str] = None
     is_active: bool
     is_superuser: bool
+    created_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}

@@ -79,6 +79,7 @@ async def register_user(db: AsyncSession, data: UserRegister) -> User:
         email=data.email,
         username=data.username,
         hashed_password=hash_password(data.password),
+        full_name=data.full_name,
     )
     db.add(user)
     await db.flush()  # Assign user.id before creating audit log

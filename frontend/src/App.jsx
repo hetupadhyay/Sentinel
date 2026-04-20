@@ -19,6 +19,7 @@ import Profile from '@/pages/Profile';
 import Settings from '@/pages/Settings';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
+import About from '@/pages/About';
 
 // App shell — top bar only, full-width content (NO sidebar)
 function AppShell() {
@@ -78,6 +79,7 @@ export default function App() {
                 {/* Public routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/about" element={<About />} />
                 <Route index element={<Landing />} />
 
                 {/* Protected app routes — top-nav only, no sidebar */}

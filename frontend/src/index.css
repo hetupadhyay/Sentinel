@@ -361,6 +361,144 @@
   .scan-row:hover {
     background-color: var(--hover);
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     AVATAR GRADIENT — Animated gradient ring for profile avatar
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .avatar-gradient {
+    background: linear-gradient(135deg, var(--accent), #a855f7, #ec4899, var(--accent));
+    background-size: 300% 300%;
+    animation: avatar-gradient-shift 6s ease infinite;
+  }
+
+  @keyframes avatar-gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     DANGER ZONE — Red-bordered warning section
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .danger-zone {
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-left: 3px solid var(--risk-critical);
+    border-radius: 8px;
+    background-color: rgba(239, 68, 68, 0.04);
+    transition: border-color 200ms ease, background-color 200ms ease;
+  }
+
+  .danger-zone:hover {
+    border-color: rgba(239, 68, 68, 0.4);
+    background-color: rgba(239, 68, 68, 0.06);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SKELETON SHIMMER — Loading placeholder animation
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--panel) 25%,
+      var(--hover) 50%,
+      var(--panel) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite ease-in-out;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     MICRO-INTERACTIONS — Smooth hovers, presses, and focus states
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .interactive-scale {
+    transition: transform 150ms ease, box-shadow 150ms ease;
+  }
+
+  .interactive-scale:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .interactive-scale:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  /* Stagger animation helper */
+  .stagger-1 { animation-delay: 0.05s; }
+  .stagger-2 { animation-delay: 0.1s; }
+  .stagger-3 { animation-delay: 0.15s; }
+  .stagger-4 { animation-delay: 0.2s; }
+  .stagger-5 { animation-delay: 0.25s; }
+
+  /* Profile section card */
+  .profile-section {
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+  }
+
+  .profile-section:hover {
+    border-color: var(--border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Stats pill — compact stat display */
+  .stat-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    transition: border-color 150ms ease, transform 150ms ease;
+  }
+
+  .stat-pill:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  /* Footer column link */
+  .footer-link {
+    display: block;
+    font-size: 13px;
+    color: var(--text-secondary);
+    transition: color 150ms ease;
+    padding: 2px 0;
+  }
+
+  .footer-link:hover {
+    color: var(--text-primary);
+  }
+
+  /* Confirmation modal overlay */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--overlay);
+    animation: overlay-in 0.15s ease-out both;
+  }
+
+  .modal-content {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 400px;
+    width: 90%;
+    animation: sentinel-fade-in 0.2s ease-out both;
+  }
 }
 
 @layer utilities {

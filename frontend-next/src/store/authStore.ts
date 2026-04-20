@@ -22,6 +22,11 @@ interface User {
   id: number;
   email: string;
   username: string;
+  full_name?: string;
+  phone?: string;
+  country?: string;
+  gender?: string;
+  created_at?: string;
 }
 
 interface AuthState {
@@ -31,8 +36,11 @@ interface AuthState {
   error: string | null;
   hydrate: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, username: string, password: string) => Promise<void>;
+  register: (email: string, username: string, password: string, fullName?: string) => Promise<void>;
   logout: () => void;
+  updateProfile: (data: Partial<User>) => Promise<any>;
+  changePassword: (curr: string, newPw: string, conf: string) => Promise<any>;
+  deleteAccount: (pw: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -71,24 +79,26 @@ export const useAuthStore = create<AuthState>((set) => ({
     } catch (err: any) {
       let msg = 'Login failed.';
       if (err.response?.data?.detail) {
-        const detail = err.response.data.detail;
-        msg = typeof detail === 'string' ? detail : JSON.stringify(detail);
+        msg = typeof err.response.data.detail === 'string' ? err.response.data.detail : JSON.stringify(err.response.data.detail);
+      } else if (err.response?.data?.error?.message) {
+        msg = err.response.data.error.message;
       }
       set({ error: msg, isLoading: false });
       throw new Error(msg);
     }
   },
 
-  register: async (email, username, password) => {
+  register: async (email, username, password, fullName) => {
     set({ isLoading: true, error: null });
     try {
-      await client.post('/auth/register', { email, username, password });
+      await client.post('/auth/register', { email, username, password, full_name: fullName });
       set({ isLoading: false });
     } catch (err: any) {
       let msg = 'Registration failed.';
       if (err.response?.data?.detail) {
-        const detail = err.response.data.detail;
-        msg = typeof detail === 'string' ? detail : JSON.stringify(detail);
+        msg = typeof err.response.data.detail === 'string' ? err.response.data.detail : JSON.stringify(err.response.data.detail);
+      } else if (err.response?.data?.error?.message) {
+        msg = err.response.data.error.message;
       }
       set({ error: msg, isLoading: false });
       throw new Error(msg);
@@ -99,6 +109,51 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     set({ user: null, isAuthenticated: false, error: null });
+  },
+
+  updateProfile: async (profileData) => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data } = await client.put('/api/v1/profile', profileData);
+      const me = await client.get('/auth/me');
+      set({ user: me.data, isLoading: false });
+      return data;
+    } catch (err: any) {
+      const msg = err.response?.data?.error?.message || err.response?.data?.detail || 'Failed to update profile.';
+      set({ error: msg, isLoading: false });
+      throw new Error(msg);
+    }
+  },
+
+  changePassword: async (currentPassword, newPassword, confirmPassword) => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data } = await client.put('/api/v1/profile/password', {
+        current_password: currentPassword,
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+      });
+      set({ isLoading: false });
+      return data;
+    } catch (err: any) {
+      const msg = err.response?.data?.error?.message || err.response?.data?.detail || 'Failed to change password.';
+      set({ error: msg, isLoading: false });
+      throw new Error(msg);
+    }
+  },
+
+  deleteAccount: async (password) => {
+    set({ isLoading: true, error: null });
+    try {
+      await client.delete('/api/v1/profile', { data: { password } });
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      set({ user: null, isAuthenticated: false, isLoading: false });
+    } catch (err: any) {
+      const msg = err.response?.data?.error?.message || err.response?.data?.detail || 'Failed to delete account.';
+      set({ error: msg, isLoading: false });
+      throw new Error(msg);
+    }
   },
 }));
 

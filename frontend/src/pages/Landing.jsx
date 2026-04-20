@@ -1,10 +1,10 @@
 // src/pages/Landing.jsx
 // Sentinel — Linear-inspired marketing landing page
-// Hero → Product Preview → Features → CTA
+// Hero → Stats Bar → Features → Pricing → Multi-Column Footer
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, Zap, Eye, Brain, ScanSearch, Lock } from 'lucide-react';
+import { ArrowRight, Shield, Zap, Eye, Brain, ScanSearch, Lock, Activity, BarChart3, Clock } from 'lucide-react';
 import TopBar from '@/components/layout/TopBar';
 import { Badge } from '@/components/ui/Badge';
 import { RevealOnScroll } from '@/components/ui/RevealOnScroll';
@@ -39,6 +39,43 @@ const FEATURES = [
   },
 ];
 
+const STATS = [
+  { value: '6+', label: 'Detection Modules', icon: Shield },
+  { value: '99.9%', label: 'Uptime', icon: Clock },
+  { value: '<2s', label: 'Avg. Scan Time', icon: Zap },
+  { value: '4.9', label: 'User Rating', icon: BarChart3 },
+];
+
+const FOOTER_COLUMNS = [
+  {
+    title: 'Product',
+    links: [
+      { label: 'Features', href: '/#features' },
+      { label: 'Pricing', href: '/#pricing' },
+      { label: 'Security', href: '/#features' },
+      { label: 'API', href: '/#features' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { label: 'Documentation', href: '#' },
+      { label: 'Safety Guide', href: '#' },
+      { label: 'Blog', href: '#' },
+      { label: 'Community', href: '#' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'Careers', href: '#' },
+      { label: 'Contact', href: '#' },
+      { label: 'Privacy Policy', href: '#' },
+    ],
+  },
+];
+
 export default function Landing() {
   return (
     <div className="min-h-screen bg-background selection:bg-accent-muted selection:text-text-primary overflow-x-hidden">
@@ -46,7 +83,7 @@ export default function Landing() {
       <TopBar variant="public" />
 
       {/* ── Hero Section ── */}
-      <section className="pt-32 lg:pt-44 pb-20 px-6 lg:px-8">
+      <section className="pt-32 lg:pt-44 pb-12 px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center space-y-6 animate-fade-up">
           {/* Announcement badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-muted border border-accent/10">
@@ -74,7 +111,7 @@ export default function Landing() {
           <div className="flex items-center justify-center gap-3 pt-2">
             <Link to="/register"
                   className="inline-flex items-center h-11 px-6 rounded-lg text-[14px] font-semibold
-                             bg-accent text-white hover:bg-accent-hover transition-colors shadow-lg shadow-accent/10">
+                             bg-accent text-white hover:bg-accent-hover transition-colors shadow-lg shadow-accent/10 interactive-scale">
               Get Started <ArrowRight size={16} className="ml-2" />
             </Link>
             <Link to="/login"
@@ -85,6 +122,29 @@ export default function Landing() {
             </Link>
           </div>
         </div>
+      </section>
+
+      {/* ── Stats Trust Bar ── */}
+      <section className="px-6 lg:px-8 pb-20">
+        <RevealOnScroll>
+          <div className="max-w-3xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {STATS.map(({ value, label, icon: Icon }, i) => (
+                <div
+                  key={label}
+                  className="flex flex-col items-center text-center py-5 px-3 rounded-lg
+                             border border-background-border bg-background-surface
+                             hover:border-accent/30 transition-all duration-200 interactive-scale"
+                  style={{ animationDelay: `${i * 0.1}s` }}
+                >
+                  <Icon size={16} className="text-accent mb-2" />
+                  <span className="text-[22px] font-extrabold text-text-primary tracking-tight">{value}</span>
+                  <span className="text-[11px] text-text-secondary mt-0.5">{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </RevealOnScroll>
       </section>
 
       {/* ── Features Section ── */}
@@ -135,25 +195,58 @@ export default function Landing() {
             </p>
             <Link to="/register"
                   className="inline-flex items-center h-11 px-6 rounded-lg text-[14px] font-semibold
-                             bg-accent text-white hover:bg-accent-hover transition-colors mt-6">
+                             bg-accent text-white hover:bg-accent-hover transition-colors mt-6 interactive-scale">
               Start Free <ArrowRight size={16} className="ml-2" />
             </Link>
           </div>
         </RevealOnScroll>
       </section>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-background-border py-8">
-        <div className="max-w-4xl mx-auto px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-[6px] h-[6px] rounded-full bg-accent" />
-            <span className="text-[12px] font-bold text-text-primary tracking-tight uppercase">Sentinel</span>
+      {/* ── Multi-Column Footer ── */}
+      <footer className="border-t border-background-border">
+        {/* Main footer content */}
+        <div className="max-w-5xl mx-auto px-6 lg:px-8 py-14">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 lg:gap-12">
+            {/* Brand column */}
+            <div className="col-span-2 sm:col-span-1">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-[7px] h-[7px] rounded-full bg-accent" />
+                <span className="text-[13px] font-bold text-text-primary tracking-tight uppercase">Sentinel</span>
+              </div>
+              <p className="text-[12px] text-text-secondary leading-relaxed max-w-[200px]">
+                Multi-signal fraud detection engine protecting users across every digital attack vector.
+              </p>
+            </div>
+
+            {/* Link columns */}
+            {FOOTER_COLUMNS.map(({ title, links }) => (
+              <div key={title}>
+                <h4 className="text-[12px] font-semibold text-text-primary tracking-tight mb-3">{title}</h4>
+                <ul className="space-y-1.5">
+                  {links.map(({ label, href }) => (
+                    <li key={label}>
+                      {href.startsWith('/') ? (
+                        <Link to={href} className="footer-link">{label}</Link>
+                      ) : (
+                        <a href={href} className="footer-link">{label}</a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <p className="text-[11px] text-text-muted">© 2026 Sentinel. All rights reserved.</p>
-          <div className="flex items-center gap-6">
-            <a href="#" className="text-[11px] text-text-secondary hover:text-text-primary transition-colors">Privacy</a>
-            <a href="#" className="text-[11px] text-text-secondary hover:text-text-primary transition-colors">Terms</a>
-            <a href="#" className="text-[11px] text-text-secondary hover:text-text-primary transition-colors">Security</a>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="border-t border-background-border">
+          <div className="max-w-5xl mx-auto px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-[11px] text-text-muted">© 2026 Sentinel. All rights reserved.</p>
+            <div className="flex items-center gap-6">
+              <a href="#" className="text-[11px] text-text-secondary hover:text-text-primary transition-colors">Privacy</a>
+              <a href="#" className="text-[11px] text-text-secondary hover:text-text-primary transition-colors">Terms</a>
+              <a href="#" className="text-[11px] text-text-secondary hover:text-text-primary transition-colors">Security</a>
+            </div>
           </div>
         </div>
       </footer>

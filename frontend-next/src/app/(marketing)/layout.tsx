@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function MarketingLayout({
   children,
@@ -26,6 +27,7 @@ export default function MarketingLayout({
         </div>
 
         <div className="flex items-center gap-6">
+          <ThemeToggle />
           <Link href="/login" className="text-[12px] font-medium text-text-secondary hover:text-text-primary transition-colors">
             Log in
           </Link>

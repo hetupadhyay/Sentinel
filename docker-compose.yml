@@ -2,7 +2,7 @@
 # Sentinel — Multi-Signal Fraud Detection Engine
 # Orchestrates: FastAPI backend, PostgreSQL, Redis, React frontend (Nginx)
 
-version: "3.9"
+
 
 services:
 

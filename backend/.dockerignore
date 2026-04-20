@@ -4,3 +4,9 @@ __pycache__
 venv/
 .venv/
 alembic/versions/*_pycache__/
+data/
+models/
+.git/
+.github/
+*.log
+*.sqlite
