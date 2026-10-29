@@ -1,159 +1,163 @@
 import React from 'react';
 import Link from 'next/link';
-import { 
-  ArrowRight, 
-  Shield, 
-  Zap, 
-  Eye, 
-  Brain, 
-  Lock 
-} from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { RevealOnScroll } from '@/components/ui/RevealOnScroll';
+import { Specimen } from '@/components/marketing/Specimen';
 
-const features = [
+// What each detector reads, with signals it actually reports.
+const checks = [
   {
-    icon: Shield,
-    title: 'Multi-Signal Detection',
-    description: 'Analyze job postings, messages, URLs, images, and news articles through 6+ specialized AI detection modules.',
+    title: 'Job offers',
+    body: 'Fake recruiters, fees to get started, and pay that’s too good to be true.',
+    signals: ['Registration fee request', 'No interview required', 'Personal email used for recruitment'],
   },
   {
-    icon: Zap,
-    title: 'Real-Time Analysis',
-    description: 'Get instant fraud risk assessments with detailed breakdowns of signals, attack classifications, and confidence scores.',
+    title: 'Texts and emails',
+    body: 'Messages that rush you into signing in, paying, or sharing a code.',
+    signals: ['Credential input request', 'Account suspension threat', 'OTP relay attempt'],
   },
   {
-    icon: Eye,
-    title: 'Explainable Results',
-    description: 'Every scan highlights exactly what triggered the alert — with highlighted text spans, signal explanations, and actionable recommendations.',
+    title: 'Links',
+    body: 'Where a link really goes, before you open it.',
+    signals: ['Suspicious TLD in URL', 'URL shortener detected', 'IP address used as URL host'],
   },
   {
-    icon: Brain,
-    title: 'AI-Powered Intelligence',
-    description: 'Powered by advanced NLP models trained to detect phishing, social engineering, impersonation, and AI-generated content.',
+    title: 'News stories',
+    body: 'Sensational claims with no named source behind them.',
+    signals: ['Unverifiable anonymous sourcing', 'Miracle-cure / absolute-certainty claim', 'Clickbait engagement hook'],
   },
   {
-    icon: Lock,
-    title: 'Enterprise-Grade Security',
-    description: 'Your data is encrypted at rest and in transit. Scans are processed in isolated environments with zero data retention.',
+    title: 'Profile photos',
+    body: 'Whether a profile is using a public figure’s photo, or whether two photos show the same person.',
+    signals: ['Matches a known public figure', 'Doesn’t match the reference photo'],
   },
 ];
 
+const buttonPrimary =
+  'inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-[15px] font-medium text-white hover:bg-accent-hover active:scale-[0.98] transition-[background-color,transform] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
+const buttonSecondary =
+  'inline-flex h-11 items-center justify-center rounded-full border border-border bg-panel px-6 text-[15px] font-medium text-text-primary hover:bg-hover active:scale-[0.98] transition-[background-color,transform] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
+
 export default function LandingPage() {
   return (
-    <div className="bg-bg min-h-screen text-text-primary selection:bg-accent/30 overflow-x-hidden font-sans">
-      
-      {/* ── 1. Hero Section ── */}
-      <section className="relative px-6 lg:px-8 pt-32 lg:pt-48 pb-32 overflow-hidden">
-        {/* Soft background glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-accent/5 blur-[120px] rounded-full pointer-events-none -z-10" />
-        
-        <div className="max-w-[900px] mx-auto text-center space-y-10 animate-fade-up">
-          {/* Announcement */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-panel border border-border/50">
-            <span className="flex h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-            <span className="text-[11px] font-medium text-text-secondary tracking-tight">
-              AI-generated content detection is now live
-            </span>
-            <ArrowRight size={11} className="text-text-muted/60" />
-          </div>
-
-          <div className="space-y-6">
-            <h1 className="text-5xl lg:text-[72px] font-bold leading-[1.05] tracking-tighter text-text-primary">
-              Detect fraud before <br />
-              <span className="text-text-secondary/50">it reaches you.</span>
-            </h1>
-            <p className="text-[16px] lg:text-[19px] text-text-secondary leading-relaxed max-w-[600px] mx-auto font-medium">
-              Multi-signal fraud detection powered by AI. Analyze job postings, 
-              messages, and URLs with explainable, real-time intelligence.
-            </p>
-          </div>
-
-          <div className="flex items-center justify-center gap-3 pt-6">
-            <Link href="/signup">
-              <Button variant="primary" className="h-11 px-7 text-[14px] font-bold rounded-lg bg-white text-black hover:bg-white/90 active:scale-95 transition-all shadow-xl shadow-white/5">
-                Get started for free
-              </Button>
+    <div className="overflow-x-clip">
+      {/* Hero: the product working on a real-looking message */}
+      <section className="max-w-[1200px] mx-auto px-5 sm:px-8 pt-14 pb-20 lg:pt-24 lg:pb-28 grid gap-12 lg:gap-16 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center">
+        <div className="max-w-[520px]">
+          <h1 className="text-[40px] sm:text-[52px] lg:text-[60px] leading-[1.02] font-semibold tracking-[-0.035em] text-text-primary">
+            Not sure it’s real? Paste it in.
+          </h1>
+          <p className="mt-6 text-[17px] sm:text-[18px] leading-[1.6] text-text-secondary max-w-[46ch]">
+            Sentinel reads job offers, texts, emails, links and news stories, marks the exact
+            words that look like fraud, and tells you what to do next.
+          </p>
+          <div className="mt-9 flex flex-wrap items-center gap-3">
+            <Link href="/signup" className={buttonPrimary}>
+              Check a message
             </Link>
-            <Link href="/login">
-              <Button variant="secondary" className="h-11 px-7 text-[14px] font-bold rounded-lg border-border hover:bg-panel active:scale-95 transition-all">
-                Sign in
-              </Button>
+            <Link href="/login" className={buttonSecondary}>
+              Log in
             </Link>
           </div>
+          <p className="mt-4 text-[13px] text-text-muted">Free while Sentinel is in beta.</p>
         </div>
+
+        <Specimen />
       </section>
 
-      {/* ── 2. Features Section ── */}
-      <section id="features" className="max-w-[1200px] mx-auto px-6 lg:px-8 py-32 border-t border-border">
-        <RevealOnScroll>
-          <div className="text-center mb-20 space-y-3">
-            <p className="text-[11px] font-bold text-accent uppercase tracking-widest">Features</p>
-            <h2 className="text-3xl lg:text-4xl font-bold text-text-primary tracking-tight">
-              Everything you need to stay protected
+      {/* What it reads */}
+      <section aria-labelledby="checks-heading" className="border-t border-border">
+        <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 lg:py-28 grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+          <div className="lg:sticky lg:top-28 lg:self-start max-w-[440px]">
+            <h2 id="checks-heading" className="text-[32px] sm:text-[38px] leading-[1.1] font-semibold tracking-[-0.03em]">
+              Five kinds of thing you can check
             </h2>
-            <p className="text-[14px] text-text-secondary max-w-[450px] mx-auto leading-relaxed">
-              Six specialized detection modules working together to identify threats across every attack vector.
+            <p className="mt-4 text-[16px] leading-[1.6] text-text-secondary">
+              Each one has its own detector. Every flag points back to the words or pixels that
+              triggered it, so you never get a score without a reason.
             </p>
           </div>
-        </RevealOnScroll>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
-          {features.map((f, i) => (
-            <RevealOnScroll key={i} delay={i * 0.1}>
-              <div className="p-6 rounded-xl hover:bg-hover border border-transparent hover:border-border transition-all h-full group">
-                <div className="w-10 h-10 rounded-lg bg-panel border border-border flex items-center justify-center text-text-secondary group-hover:text-accent group-hover:border-accent/30 transition-all mb-6">
-                  <f.icon size={20} />
-                </div>
-                <div className="space-y-2">
-                  <h4 className="text-[15px] font-bold text-text-primary tracking-tight">{f.title}</h4>
-                  <p className="text-[13px] text-text-secondary leading-relaxed font-medium">
-                    {f.description}
-                  </p>
-                </div>
+          <dl className="divide-y divide-border border-y border-border">
+            {checks.map((c) => (
+              <div key={c.title} className="py-7 grid gap-3 sm:grid-cols-[180px_minmax(0,1fr)] sm:gap-8">
+                <dt className="text-[17px] font-semibold text-text-primary">{c.title}</dt>
+                <dd>
+                  <p className="text-[15px] leading-[1.6] text-text-secondary">{c.body}</p>
+                  <ul className="mt-3 flex flex-wrap gap-x-2 gap-y-2" aria-label={`Signals for ${c.title.toLowerCase()}`}>
+                    {c.signals.map((s) => (
+                      <li
+                        key={s}
+                        className="font-serif text-[14px] text-text-primary rounded-[3px] px-1.5 bg-marker/35 dark:bg-marker/15"
+                      >
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
               </div>
-            </RevealOnScroll>
-          ))}
+            ))}
+          </dl>
         </div>
       </section>
 
-      {/* ── 3. CTA Section ── */}
-      <section id="pricing" className="relative border-t border-border py-40 bg-panel/20 overflow-hidden">
-        {/* Glow effect */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-accent/5 blur-[100px] rounded-full pointer-events-none -z-10" />
-        
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-20 text-center space-y-12">
-          <RevealOnScroll>
-            <div className="space-y-6">
-              <p className="text-[11px] font-bold text-accent uppercase tracking-widest">Open Beta</p>
-              <h2 className="text-4xl lg:text-6xl font-bold text-text-primary tracking-tighter leading-tight">
-                Free during beta. <br /> Protect your team today.
-              </h2>
-              <p className="text-[16px] text-text-secondary max-w-[500px] mx-auto font-medium">
-                Start protecting your users from phishing and fraud. 
-                Full access to all AI modules at no cost during beta.
-              </p>
-            </div>
-          </RevealOnScroll>
-          
-          <RevealOnScroll delay={0.2}>
-            <div className="flex items-center justify-center gap-4">
-              <Link href="/signup">
-                <Button variant="primary" className="h-11 px-8 text-[14px] font-bold rounded-lg bg-white text-black hover:bg-white/90 active:scale-95 transition-all">
-                  Get started for free
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button variant="secondary" className="h-11 px-8 text-[14px] font-bold rounded-lg border-border hover:bg-panel active:scale-95 transition-all">
-                  Sign in
-                </Button>
-              </Link>
-            </div>
-          </RevealOnScroll>
+      {/* For people building products */}
+      <section aria-labelledby="api-heading" className="border-t border-border bg-panel">
+        <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 lg:py-24 grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:items-center">
+          <div className="max-w-[440px]">
+            <h2 id="api-heading" className="text-[28px] sm:text-[32px] leading-[1.15] font-semibold tracking-[-0.03em]">
+              Run the same checks from your own app
+            </h2>
+            <p className="mt-4 text-[16px] leading-[1.6] text-text-secondary">
+              Create an API key in your account and send text to Sentinel. You get back the score,
+              the risk level, every signal, and the exact character ranges to highlight.
+            </p>
+            <Link
+              href="/signup"
+              className="mt-6 inline-block text-[15px] font-medium text-accent underline underline-offset-4 decoration-accent/40 hover:decoration-accent"
+            >
+              Get an API key
+            </Link>
+          </div>
+
+          <pre
+            aria-label="Example API response"
+            className="overflow-x-auto rounded-[12px] border border-border bg-bg p-5 sm:p-6 text-[13px] leading-[1.7] text-text-secondary"
+          >
+            <code>{`{
+  "risk_score": 84.0,
+  "risk_level": "high",
+  "signals_triggered": [
+    "Account suspension threat",
+    "Credential input request"
+  ],
+  "highlighted_spans": [
+    { "start": 11, "end": 42,
+      "text": "Your account has been suspended" }
+  ],
+  "recommendation": "Don't open the link. Call your bank."
+}`}</code>
+          </pre>
+        </div>
+      </section>
+
+      {/* Closing call to action */}
+      <section className="border-t border-border">
+        <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-20 lg:py-28 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-[560px]">
+            <h2 className="text-[32px] sm:text-[40px] leading-[1.08] font-semibold tracking-[-0.03em]">
+              Got something that doesn’t feel right?
+            </h2>
+            <p className="mt-4 text-[16px] leading-[1.6] text-text-secondary">
+              Create a free account and check it now. Your scans are saved to your history so you
+              can come back to them.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/signup" className={buttonPrimary}>
+              Create free account
+            </Link>
+          </div>
         </div>
       </section>
     </div>
   );
 }
-
-

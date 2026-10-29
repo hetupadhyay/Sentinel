@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Schibsted_Grotesk, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const grotesk = Schibsted_Grotesk({ subsets: ["latin"], variable: "--font-grotesk" });
+const serif = Source_Serif_4({ subsets: ["latin"], variable: "--font-serif-text" });
 
 export const metadata: Metadata = {
-  title: "SENTINEL — Fraud Detection Engine",
-  description: "Advanced AI-powered fraud, phishing, and impersonation detection platform.",
+  title: "Sentinel: check if a message is a scam",
+  description: "Paste a job offer, text, email, link or news story. Sentinel marks the exact words that look like fraud and tells you what to do next.",
 };
 
 export default function RootLayout({
@@ -16,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} antialiased font-sans`}>
+    <html lang="en" className={`dark ${grotesk.variable} ${serif.variable}`}>
+      <body className="antialiased font-sans">
         {children}
         <Toaster
           position="top-right"
@@ -26,7 +27,7 @@ export default function RootLayout({
               background: "var(--panel)",
               color: "var(--text-primary)",
               border: "1px solid var(--border)",
-              fontFamily: "var(--font-inter), sans-serif",
+              fontFamily: "var(--font-grotesk), sans-serif",
               fontSize: "13px",
             },
             success: {

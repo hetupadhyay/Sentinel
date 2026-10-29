@@ -1,7 +1,36 @@
 import React from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+
+const navLinks = [
+  { href: '/features', label: 'Features' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
+
+const footerLinks = [
+  { href: '/features', label: 'Features' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: '/terms', label: 'Terms' },
+];
+
+function Wordmark() {
+  return (
+    <span className="flex items-center gap-2">
+      {/* A marked line: the product's one idea, reduced to a glyph */}
+      <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden className="shrink-0">
+        <rect x="0" y="1" width="18" height="3" rx="1.5" className="fill-text-primary" />
+        <rect x="0" y="7" width="12" height="5" rx="1.5" className="fill-marker" />
+        <rect x="0" y="8.5" width="12" height="2" rx="1" className="fill-text-primary" />
+      </svg>
+      <span className="text-[16px] font-semibold tracking-tight text-text-primary">Sentinel</span>
+    </span>
+  );
+}
 
 export default function MarketingLayout({
   children,
@@ -9,82 +38,67 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col min-h-screen bg-bg">
-      {/* ── Navbar ── */}
-      <nav className="fixed top-0 inset-x-0 z-[100] h-16 flex items-center justify-between px-6 lg:px-20 border-b border-border bg-bg/60 backdrop-blur-md">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-accent" />
-            <span className="text-[13px] font-bold text-text-primary tracking-tighter uppercase">SENTINEL</span>
-          </Link>
-          
-          <div className="hidden md:flex items-center gap-8">
-            <Link href="/features" className="text-[12px] font-medium text-text-secondary hover:text-text-primary transition-colors">Features</Link>
-            <Link href="/pricing" className="text-[12px] font-medium text-text-secondary hover:text-text-primary transition-colors">Pricing</Link>
-            <Link href="/about" className="text-[12px] font-medium text-text-secondary hover:text-text-primary transition-colors">Company</Link>
-            <Link href="/contact" className="text-[12px] font-medium text-text-secondary hover:text-text-primary transition-colors">Contact</Link>
+    <div className="flex flex-col min-h-screen bg-bg text-text-primary">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:rounded-md focus:bg-panel focus:px-3 focus:py-2 focus:text-[13px]"
+      >
+        Skip to content
+      </a>
+
+      <header className="sticky top-0 z-[100] border-b border-border bg-bg/85 backdrop-blur-md">
+        <nav className="max-w-[1200px] mx-auto h-16 px-5 sm:px-8 flex items-center justify-between gap-6">
+          <div className="flex items-center gap-10">
+            <Link href="/" aria-label="Sentinel home" className="rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+              <Wordmark />
+            </Link>
+            <ul className="hidden md:flex items-center gap-7">
+              {navLinks.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="text-[14px] text-text-secondary hover:text-text-primary transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
 
-        <div className="flex items-center gap-6">
-          <ThemeToggle />
-          <Link href="/login" className="text-[12px] font-medium text-text-secondary hover:text-text-primary transition-colors">
-            Log in
-          </Link>
-          <Link href="/signup">
-            <Button variant="primary" className="rounded-md h-8 px-4 text-[12px] font-semibold bg-white text-black hover:bg-white/90 border-none transition-all">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <ThemeToggle />
+            <Link href="/login" className="hidden sm:inline text-[14px] text-text-secondary hover:text-text-primary transition-colors">
+              Log in
+            </Link>
+            <Link
+              href="/signup"
+              className="inline-flex h-9 items-center rounded-full bg-accent px-4 text-[14px] font-medium text-white hover:bg-accent-hover transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
               Sign up
-            </Button>
-          </Link>
-        </div>
-      </nav>
+            </Link>
+          </div>
+        </nav>
+      </header>
 
-      <main className="flex-1 pt-16">
+      <main id="main" className="flex-1">
         {children}
       </main>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-border py-16 bg-bg">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-20 flex flex-col md:flex-row items-start justify-between gap-12">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-accent" />
-              <span className="text-[14px] font-bold text-text-primary tracking-tighter uppercase">SENTINEL</span>
-            </div>
-            <p className="text-[12px] text-text-muted max-w-[200px]">
-              Fraud detection at the speed of neural intelligence.
-            </p>
+      <footer className="border-t border-border">
+        <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-4">
+            <Wordmark />
+            <p className="text-[13px] text-text-muted">© 2026 Sentinel</p>
           </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-12 md:gap-24">
-            <div className="space-y-4">
-              <h4 className="text-[11px] font-bold text-text-primary uppercase tracking-widest">Product</h4>
-              <ul className="space-y-2">
-                <li><Link href="/features" className="text-[12px] text-text-muted hover:text-text-primary">Features</Link></li>
-                <li><Link href="/pricing" className="text-[12px] text-text-muted hover:text-text-primary">Pricing</Link></li>
-              </ul>
-            </div>
-            <div className="space-y-4">
-              <h4 className="text-[11px] font-bold text-text-primary uppercase tracking-widest">Company</h4>
-              <ul className="space-y-2">
-                <li><Link href="/about" className="text-[12px] text-text-muted hover:text-text-primary">About</Link></li>
-                <li><Link href="/contact" className="text-[12px] text-text-muted hover:text-text-primary">Contact</Link></li>
-              </ul>
-            </div>
-            <div className="space-y-4">
-              <h4 className="text-[11px] font-bold text-text-primary uppercase tracking-widest">Legal</h4>
-              <ul className="space-y-2">
-                <li><Link href="/privacy" className="text-[12px] text-text-muted hover:text-text-primary">Privacy</Link></li>
-                <li><Link href="/terms" className="text-[12px] text-text-muted hover:text-text-primary">Terms</Link></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-20 mt-16 pt-8 border-t border-border/50">
-          <p className="text-[11px] text-text-muted font-medium">© 2026 Sentinel Engineering. Built for the modern web.</p>
+          <ul className="flex flex-wrap gap-x-6 gap-y-2">
+            {footerLinks.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="text-[13px] text-text-secondary hover:text-text-primary transition-colors">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </footer>
     </div>
   );
 }
-
