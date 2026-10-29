@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
-import { Logo } from '@/components/ui/Logo';
+import { ShieldAlert, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/Button';
@@ -52,9 +51,15 @@ export default function LoginPage() {
 
   return (
     <>
-      <Link href="/" aria-label="Sentinel home" className="flex mb-8 justify-center">
-        <Logo size={28} className="text-[20px] gap-2.5" />
-      </Link>
+      <div className="flex items-center gap-2.5 mb-8 justify-center">
+        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent-muted border border-accent/20">
+          <ShieldAlert size={20} className="text-accent"/>
+        </div>
+        <div>
+          <p className="text-base font-bold text-text-primary leading-none tracking-tight">SENTINEL</p>
+          <p className="text-[10px] text-text-muted tracking-widest uppercase">Fraud Detection Engine</p>
+        </div>
+      </div>
 
       <div className="bg-panel border border-border rounded-lg p-6 space-y-5">
         <div>

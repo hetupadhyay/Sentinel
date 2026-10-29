@@ -6,8 +6,8 @@ import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Sentinel: check if a message is a scam",
-  description: "Paste any message. Sentinel shows you what's wrong with it.",
+  title: "SENTINEL — Fraud Detection Engine",
+  description: "Advanced AI-powered fraud, phishing, and impersonation detection platform.",
 };
 
 export default function RootLayout({
@@ -16,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${inter.variable}`}>
-      <body className="antialiased font-sans">
+    <html lang="en" className="dark">
+      <body className={`${inter.variable} antialiased font-sans`}>
         {children}
         <Toaster
           position="top-right"
@@ -26,7 +26,7 @@ export default function RootLayout({
               background: "var(--panel)",
               color: "var(--text-primary)",
               border: "1px solid var(--border)",
-              fontFamily: "inherit",
+              fontFamily: "var(--font-inter), sans-serif",
               fontSize: "13px",
             },
             success: {

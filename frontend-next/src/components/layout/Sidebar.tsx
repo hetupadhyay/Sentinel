@@ -10,7 +10,6 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Logo } from '@/components/ui/Logo';
 
 const navItems = [
   { label: 'Scans', icon: Activity, href: '/app/scans' },
@@ -24,7 +23,8 @@ export default function Sidebar() {
   return (
     <aside className="w-60 border-r border-border bg-panel flex flex-col hidden md:flex">
       <div className="h-16 flex items-center gap-2.5 px-6 border-b border-border">
-        <Logo size={20} className="text-[15px]" />
+        <div className="w-2.5 h-2.5 rounded-full bg-accent shadow-[0_0_8px_rgba(94,106,210,0.5)]" />
+        <span className="text-[13px] font-bold text-text-primary tracking-tighter uppercase">SENTINEL</span>
       </div>
 
       <nav className="flex-1 py-6 px-3 space-y-1">

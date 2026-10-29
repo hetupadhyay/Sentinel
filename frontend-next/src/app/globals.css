@@ -13,10 +13,6 @@
   --color-accent-hover: var(--accent-hover);
   --color-accent-muted: var(--accent-muted);
   --color-hover: var(--hover);
-  --color-flag: var(--flag);
-
-  /* SF Pro on Apple devices, Inter everywhere else */
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-inter), system-ui, sans-serif;
 
   --color-risk-critical: var(--risk-critical);
   --color-risk-high: var(--risk-high);
@@ -57,51 +53,47 @@
 }
 
 :root {
-  /* Light mode: quiet neutrals, deep teal accent, red reserved for risk */
+  /* Light Mode */
   --bg: #ffffff;
-  --panel: #f5f5f7;
-  --border: #d2d2d7;
-  --text-primary: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --text-muted: #86868b;
+  --panel: #f7f7f8;
+  --border: #e5e7eb;
+  --text-primary: #111111;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
 
-  --accent: #0b6e5f;
-  --accent-hover: #095c4f;
-  --accent-muted: rgba(11, 110, 95, 0.08);
+  --accent: #5e6ad2;
+  --accent-hover: #4b55c9;
+  --accent-muted: rgba(94, 106, 210, 0.08);
 
-  --hover: rgba(0, 0, 0, 0.04);
+  --hover: rgba(0, 0, 0, 0.03);
 
-  /* Tint behind words Sentinel flags */
-  --flag: rgba(255, 59, 48, 0.14);
-
-  --risk-critical: #d70015;
-  --risk-high: #c93400;
-  --risk-medium: #c93400;
-  --risk-low: #0066cc;
-  --risk-safe: #248a3d;
+  --risk-critical: #dc2626;
+  --risk-high: #d97706;
+  --risk-medium: #d97706;
+  --risk-low: #2563eb;
+  --risk-safe: #16a34a;
 }
 
 .dark {
-  --bg: #000000;
-  --panel: #161617;
-  --border: #2d2d2f;
-  --text-primary: #f5f5f7;
-  --text-secondary: #a1a1a6;
-  --text-muted: #86868b;
+  /* Dark Mode — Deeper blacks, Linear-style */
+  --bg: #09090b;
+  --panel: #111113;
+  --border: #1e1e22;
+  --text-primary: #ededef;
+  --text-secondary: #8b8b8e;
+  --text-muted: #555558;
 
-  --accent: #12806d;
-  --accent-hover: #179680;
-  --accent-muted: rgba(43, 182, 154, 0.14);
+  --accent: #6c72cb;
+  --accent-hover: #8187d8;
+  --accent-muted: rgba(108, 114, 203, 0.12);
 
-  --hover: rgba(255, 255, 255, 0.06);
+  --hover: rgba(255, 255, 255, 0.03);
 
-  --flag: rgba(255, 69, 58, 0.3);
-
-  --risk-critical: #ff453a;
-  --risk-high: #ff9f0a;
-  --risk-medium: #ff9f0a;
-  --risk-low: #2997ff;
-  --risk-safe: #30d158;
+  --risk-critical: #ef4444;
+  --risk-high: #f59e0b;
+  --risk-medium: #f59e0b;
+  --risk-low: #3b82f6;
+  --risk-safe: #22c55e;
 }
 
 @layer base {
@@ -112,6 +104,7 @@
   body {
     background-color: var(--bg);
     color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 13px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
@@ -124,9 +117,8 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    letter-spacing: -0.015em;
+    letter-spacing: -0.03em;
     font-weight: 600;
-    text-wrap: balance;
   }
 
   ::selection {
