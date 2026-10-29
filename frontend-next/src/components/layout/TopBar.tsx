@@ -18,6 +18,7 @@ import {
 import { useAuthStore } from '@/store/authStore';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
+import { Logo } from '@/components/ui/Logo';
 
 export default function TopBar() {
   const pathname = usePathname();
@@ -58,11 +59,8 @@ export default function TopBar() {
         
         {/* Logo */}
         <div className="flex items-center gap-6">
-          <Link href="/app" className="flex items-center gap-2 group">
-            <div className="w-[7px] h-[7px] rounded-full bg-accent group-hover:scale-110 transition-transform" />
-            <span className="text-[13px] font-bold text-text-primary tracking-tight uppercase">
-              Sentinel
-            </span>
+          <Link href="/app" aria-label="Sentinel home">
+            <Logo size={20} className="text-[15px]" />
           </Link>
 
           {/* Desktop Nav */}

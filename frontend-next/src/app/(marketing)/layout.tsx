@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { Logo } from '@/components/ui/Logo';
 
 const navLinks = [
   { href: '/features', label: 'Features' },
@@ -34,11 +35,8 @@ export default function MarketingLayout({
       {/* Translucent bar: content scrolls underneath */}
       <header className="sticky top-0 z-[100] bg-bg/72 backdrop-blur-xl backdrop-saturate-[1.8] shadow-[inset_0_-1px_0_var(--border)]">
         <nav className="max-w-[1024px] mx-auto h-12 px-5 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-[17px] font-semibold tracking-[-0.02em]">
-            <span aria-hidden className="grid h-[22px] w-[22px] place-items-center rounded-[7px] bg-text-primary">
-              <span className="h-[7px] w-[7px] rounded-full bg-accent ring-2 ring-bg" />
-            </span>
-            Sentinel
+          <Link href="/" aria-label="Sentinel home">
+            <Logo />
           </Link>
 
           <div className="flex items-center gap-1 sm:gap-6">
