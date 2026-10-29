@@ -16,8 +16,9 @@ export default function LandingPage() {
   return (
     <div className="overflow-x-clip">
       <section className="px-5 pt-20 pb-28 sm:pt-28 sm:pb-36 text-center">
-        <h1 className="text-[48px] sm:text-[72px] lg:text-[88px] leading-[1.02] font-semibold tracking-[-0.04em]">
-          Spot the scam.
+        <h1 className="text-[40px] sm:text-[64px] lg:text-[80px] leading-[1.04] font-semibold tracking-[-0.04em]">
+          <span className="block">Detect fraud before</span>
+          <span className="block text-text-muted">it reaches you.</span>
         </h1>
         <p className="mt-5 text-[19px] sm:text-[24px] leading-[1.3] tracking-[-0.01em] text-text-secondary">
           Paste any message. Know if it’s safe.
