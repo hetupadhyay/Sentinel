@@ -13,11 +13,10 @@
   --color-accent-hover: var(--accent-hover);
   --color-accent-muted: var(--accent-muted);
   --color-hover: var(--hover);
-  --color-marker: var(--marker);
-  --color-marker-ink: var(--marker-ink);
+  --color-flag: var(--flag);
 
-  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-serif-text), ui-serif, Georgia, serif;
+  /* SF Pro on Apple devices, Inter everywhere else */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-inter), system-ui, sans-serif;
 
   --color-risk-critical: var(--risk-critical);
   --color-risk-high: var(--risk-high);
@@ -58,54 +57,51 @@
 }
 
 :root {
-  /* Light mode: security-document paper and ink */
-  --bg: #f3f5f8;
-  --panel: #ffffff;
-  --border: #d8dee6;
-  --text-primary: #13203a;
-  --text-secondary: #46526a;
-  --text-muted: #6a7488;
+  /* Light mode: quiet neutrals, deep teal accent, red reserved for risk */
+  --bg: #ffffff;
+  --panel: #f5f5f7;
+  --border: #d2d2d7;
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-muted: #86868b;
 
-  --accent: #1f3f99;
-  --accent-hover: #17317a;
-  --accent-muted: rgba(31, 63, 153, 0.08);
+  --accent: #0b6e5f;
+  --accent-hover: #095c4f;
+  --accent-muted: rgba(11, 110, 95, 0.08);
 
-  --hover: rgba(19, 32, 58, 0.04);
+  --hover: rgba(0, 0, 0, 0.04);
 
-  /* Highlighter used to mark flagged words */
-  --marker: #ffe15a;
-  --marker-ink: #13203a;
+  /* Tint behind words Sentinel flags */
+  --flag: rgba(255, 59, 48, 0.14);
 
-  --risk-critical: #c21f32;
-  --risk-high: #b45309;
-  --risk-medium: #b45309;
-  --risk-low: #1f5fbf;
-  --risk-safe: #1d7a4b;
+  --risk-critical: #d70015;
+  --risk-high: #c93400;
+  --risk-medium: #c93400;
+  --risk-low: #0066cc;
+  --risk-safe: #248a3d;
 }
 
 .dark {
-  /* Dark mode: night-blue ink */
-  --bg: #0c1321;
-  --panel: #121b2c;
-  --border: #233049;
-  --text-primary: #e7ebf2;
-  --text-secondary: #a4aec0;
-  --text-muted: #7f8a9e;
+  --bg: #000000;
+  --panel: #161617;
+  --border: #2d2d2f;
+  --text-primary: #f5f5f7;
+  --text-secondary: #a1a1a6;
+  --text-muted: #86868b;
 
-  --accent: #3d6ade;
-  --accent-hover: #5480ee;
-  --accent-muted: rgba(84, 128, 238, 0.14);
+  --accent: #12806d;
+  --accent-hover: #179680;
+  --accent-muted: rgba(43, 182, 154, 0.14);
 
-  --hover: rgba(231, 235, 242, 0.04);
+  --hover: rgba(255, 255, 255, 0.06);
 
-  --marker: #e2c84c;
-  --marker-ink: #13203a;
+  --flag: rgba(255, 69, 58, 0.3);
 
-  --risk-critical: #f2596a;
-  --risk-high: #f0a03c;
-  --risk-medium: #f0a03c;
-  --risk-low: #6f9cf2;
-  --risk-safe: #46c486;
+  --risk-critical: #ff453a;
+  --risk-high: #ff9f0a;
+  --risk-medium: #ff9f0a;
+  --risk-low: #2997ff;
+  --risk-safe: #30d158;
 }
 
 @layer base {
@@ -128,7 +124,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
     font-weight: 600;
     text-wrap: balance;
   }
@@ -176,55 +172,4 @@
 
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;
-}
-
-/* ── Highlighter marks on the home page specimen ── */
-.specimen .marker {
-  color: inherit;
-  border-radius: 3px;
-  padding: 0 2px;
-  margin: 0 -2px;
-  background-color: transparent;
-  background-image: linear-gradient(var(--marker), var(--marker));
-  background-repeat: no-repeat;
-  background-position: 0 85%;
-  background-size: 0% 78%;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  transition: background-size 420ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 150ms ease;
-}
-
-.specimen .marker[data-inked="true"] {
-  background-size: 100% 78%;
-}
-
-.dark .specimen .marker[data-inked="true"] {
-  color: var(--marker-ink);
-}
-
-.specimen .marker[data-inked="true"] sup {
-  color: var(--marker-ink);
-  opacity: 0.6;
-}
-
-.specimen .marker[data-active="true"] {
-  box-shadow: 0 0 0 1.5px var(--text-primary);
-}
-
-.specimen .verdict {
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 300ms ease-out, transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-.specimen .verdict[data-inked="true"] {
-  opacity: 1;
-  transform: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .specimen .marker,
-  .specimen .verdict {
-    transition: none !important;
-  }
 }
