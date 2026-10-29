@@ -1,4 +1,9 @@
 import os
+
+# Force CPU mode to skip time-consuming CUDA/GPU initialization checks in Docker
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3" # Suppress noisy TF logs
+
 import io
 import base64
 import numpy as np
@@ -66,11 +71,12 @@ class ImageImpersonationDetector(BaseDetector):
             img1 = self._base64_to_cv2(image1_base64)
             
             if image2_base64:
-                # 2-Input Mode: Verify if img1 matches img2
                 img2 = self._base64_to_cv2(image2_base64)
-                
-                # enforce_detection=False ensures it doesn't crash if face is slightly occluded
-                result = DeepFace.verify(img1_path=img1, img2_path=img2, enforce_detection=False, model_name="Facenet")
+                import asyncio
+                # Run blocking AI call in a separate thread to prevent event loop freeze
+                result = await asyncio.to_thread(
+                    DeepFace.verify, img1_path=img1, img2_path=img2, enforce_detection=False, model_name="Facenet"
+                )
                 
                 verified = result.get("verified", False)
                 distance = result.get("distance", 0.0)
@@ -93,17 +99,28 @@ class ImageImpersonationDetector(BaseDetector):
                         metadata={"distance": distance}
                     )
             else:
-                # 1-Input Mode: Check against celebrity database (LFW)
-                self._ensure_lfw()
-                
-                dfs = DeepFace.find(img_path=img1, db_path=self.lfw_dir, enforce_detection=False, model_name="Facenet")
-                
+                # 1-Input Mode: Check against celebrity database (LFW).
+                # Only search a prebuilt index (see warmup_ai.py) — building it per request exhausts memory.
+                if not os.path.isdir(self.lfw_dir) or not any(f.endswith(".pkl") for f in os.listdir(self.lfw_dir)):
+                    return DetectorResult(
+                        score=0.0,
+                        confidence=0.0,
+                        signals=[
+                            "Watchlist check unavailable: facial index not built (run warmup_ai.py).",
+                            "Upload a reference image to verify identity instead."
+                        ]
+                    )
+
+                import asyncio
+                dfs = await asyncio.to_thread(
+                    DeepFace.find, img_path=img1, db_path=self.lfw_dir, enforce_detection=False, model_name="Facenet", silent=True
+                )
+
                 if len(dfs) > 0 and len(dfs[0]) > 0:
-                    # Match found in LFW
                     match_path = dfs[0].iloc[0]['identity']
                     # Extract name from path e.g., data/lfw_home/lfw_funneled/George_W_Bush/George_W_Bush_0001.jpg
                     person_name = os.path.basename(os.path.dirname(match_path)).replace("_", " ")
-                    
+
                     return DetectorResult(
                         score=90.0,
                         confidence=85.0,
@@ -113,12 +130,11 @@ class ImageImpersonationDetector(BaseDetector):
                         ],
                         metadata={"matched_person": person_name, "match_path": match_path}
                     )
-                else:
-                    return DetectorResult(
-                        score=0.0,
-                        confidence=80.0,
-                        signals=["Image does not match any known high-profile public figures in the watchlist."]
-                    )
+                return DetectorResult(
+                    score=0.0,
+                    confidence=80.0,
+                    signals=["Image does not match any known high-profile public figures in the watchlist."]
+                )
 
         except Exception as e:
             logger.error(f"DeepFace analysis failed: {str(e)}")

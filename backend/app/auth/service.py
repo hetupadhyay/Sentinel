@@ -100,8 +100,8 @@ async def authenticate_user(db: AsyncSession, email: str, password: str) -> User
     user = result.scalar_one_or_none()
 
     # Constant-time failure — always call verify_password even if user is None
-    # to prevent timing-based user enumeration
-    dummy_hash = "$2b$12$KIXg6Kd5y5v5v5v5v5v5uu"
+    # to prevent timing-based user enumeration. Use a valid-length dummy hash.
+    dummy_hash = "$2b$12$KB7K.Fp8p8.p8.p8.p8.p8uR8Y.v0v0v0v0v0v0v0v0v0v0v0v0v0"
     hashed = user.hashed_password if user else dummy_hash
 
     if not verify_password(password, hashed) or user is None:
